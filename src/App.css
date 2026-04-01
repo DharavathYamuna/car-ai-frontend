@@ -1,0 +1,45 @@
+body {
+  margin: 0;
+  background: #020617;
+  color: white;
+  font-family: Arial;
+}
+
+.app {
+  display: flex;
+}
+
+.sidebar {
+  width: 260px;
+  background: #020617;
+  height: 100vh;
+  padding: 20px;
+  border-right: 1px solid #1e293b;
+}
+
+.sidebar p {
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.sidebar p:hover {
+  background: #1e293b;
+}
+
+.main {
+  flex: 1;
+  padding: 30px;
+}
+
+.card {
+  background: #0f172a;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 10px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
