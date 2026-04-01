@@ -10,27 +10,35 @@ function Upload({ contractText, setContractText }) {
     setFile(e.target.files[0]);
   };
 
-  // STEP 1 → Extract PDF (dummy now)
-  const handleExtract = () => {
-    if (!file) return;
+  // ✅ FIXED: Backend Connection
+  const handleExtract = async () => {
+    if (!file) {
+      alert("Please upload a file");
+      return;
+    }
 
-    const dummyText = `
-VEHICLE LEASE AGREEMENT
+    const formData = new FormData();
+    formData.append("file", file);
 
-Lessee: John Doe
-APR: 8%
-Monthly Payment: $300
-Lease Term: 36 months
+    try {
+      const response = await fetch(
+        "https://car-lease-backend-3.onrender.com/extract", // ✅ IMPORTANT
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
-Hidden Fees: Acquisition fee, late fee, mileage fee.
-Insurance Requirement: Full coverage required.
+      const data = await response.json();
 
-More terms and conditions here...
-Scroll to read everything...
-    `;
+      console.log(data);
 
-    setContractText(dummyText);
-    setShowText(true);
+      setContractText(data.text || "No text received");
+      setShowText(true);
+    } catch (error) {
+      console.error(error);
+      alert("Error extracting contract");
+    }
   };
 
   // STEP 2 → Extract Key Terms
@@ -40,7 +48,6 @@ Scroll to read everything...
 
   return (
     <div className="upload-container">
-
       {/* LEFT SIDE */}
       <div className="left-panel">
         <h1>📄 Upload Contract</h1>
@@ -61,12 +68,12 @@ Scroll to read everything...
         {/* Contract Text */}
         {showText && (
           <>
-            <h3 
-  className="view-text" 
-  onClick={() => setShowText(!showText)}
->
-  View Contract Text {showText ? "▲" : "▼"}
-</h3>
+            <h3
+              className="view-text"
+              onClick={() => setShowText(!showText)}
+            >
+              View Contract Text {showText ? "▲" : "▼"}
+            </h3>
 
             <div className="contract-text-box">
               {contractText}
@@ -86,7 +93,7 @@ Scroll to read everything...
         )}
       </div>
 
-      {/* RIGHT SIDE (Extracted Terms) */}
+      {/* RIGHT SIDE */}
       {extracted && (
         <div className="right-panel">
           <h2>📊 Extracted Terms</h2>
